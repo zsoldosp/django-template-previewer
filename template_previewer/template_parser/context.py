@@ -6,7 +6,7 @@ from django.template.defaulttags import (
 
 from django.template.loader import get_template
 from django.template.loader_tags import (
-    BlockNode, ExtendsNode, IncludeNode, ConstantIncludeNode
+    BlockNode, ExtendsNode, IncludeNode
 )
 
 
@@ -95,12 +95,6 @@ def _get_node_context(node):
             # Multi-variable for
             for i, loopvar in enumerate(node.loopvars):
                 renames += [([loopvar], listvar + ["0", str(i)])]
-    elif isinstance(node, ConstantIncludeNode):
-        result = get_context(node.template)
-        for key, val in node.extra_context.iteritems():
-            if hasattr(val.var, 'var'):
-                listval = val.var.var.split('.')
-                renames += [([key], listval)]
     elif isinstance(node, WithNode):
         for key, val in node.extra_context.iteritems():
             if hasattr(val.var, 'var'):

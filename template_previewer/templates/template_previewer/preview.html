@@ -10,7 +10,7 @@
         <script type="text/javascript" src="{% static 'js/dust-core-0.3.0.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/template_previewer/context.dust.js' %}"></script>
         <script type="text/javascript">
-            var parse_url = "{% filter escapejs %}{% url parse %}{% endfilter %}";
+            var parse_url = "{% filter escapejs %}{% url 'parse' %}{% endfilter %}";
         </script>
         <script type="text/javascript" src="{% static 'js/template_previewer/previewer.js' %}"></script>
     </head>

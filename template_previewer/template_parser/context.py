@@ -61,7 +61,7 @@ def _get_node_context(node):
     elif isinstance(node, IfEqualNode):
         result = _get_vars(node.var1) + _get_vars(node.var2)
     elif isinstance(node, IncludeNode):
-        result = _get_vars(node.template_name)
+        result = _get_vars(node.template)
         for key, val in node.extra_context.iteritems():
             result += _get_vars(val)
         # Note that we ignore the included template and renaming here, because
@@ -149,7 +149,7 @@ def get_context(template):
     """
 
     result = []
-    for node in template.nodelist:
+    for node in template.template.nodelist:
         result += _get_node_context(node)
 
     return result

@@ -67,8 +67,7 @@ def _get_node_context(node):
         # Note that we ignore the included template and renaming here, because
         # We can not know which template is the one included
     elif isinstance(node, URLNode):
-        if not node.legacy_view_name:  # Django 1.3 new url tag
-            result += _get_vars(node.view_name)
+        result += _get_vars(node.view_name)
         for arg in node.args:
             result += _get_vars(arg)
         for key, arg in node.kwargs.items():

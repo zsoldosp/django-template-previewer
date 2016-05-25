@@ -92,13 +92,13 @@ def parse(request):
         try:
             template = loader.get_template(template_name)
         except TemplateDoesNotExist:
-            return HttpResponse(json.dumps({"error": u"Could not load template '%s'" % template_name}), mimetype="application/json")
+            return HttpResponse(json.dumps({"error": u"Could not load template '%s'" % template_name}), content_type="application/json")
         tree = []
         for path in get_context(template):
             _extend(tree, path)
-        return HttpResponse(json.dumps(tree), mimetype="application/json")
+        return HttpResponse(json.dumps(tree), content_type="application/json")
     else:
-        return HttpResponse(json.dumps({"error": unicode(form.errors)}), mimetype="application/json")
+        return HttpResponse(json.dumps({"error": unicode(form.errors)}), content_type="application/json")
 
 def preview(request):
     """

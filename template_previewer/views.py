@@ -27,7 +27,20 @@ class ContextItem(object):
     def __getitem__(self, key):
         if isinstance(key, int):
             key = str(key)
-        return self._context_dict[key]
+        raw = self._context_dict[key]
+        return self._typed_val(raw)
+
+    def _typed_val(self, raw):
+        # TODO: this is ugly. But we need this 'coz otherwise conditionals don't work correctly, e.g.: if foo, if foo == 1, etc.
+        str_raw = str(raw)
+        for conv_fn in (long, float):
+            try:
+                _typed = conv_fn(str_raw)
+            except (TypeError, ValueError):
+                continue
+            if str(_typed) == str_raw:
+                return _typed
+        return raw
 
     def __getattr__(self, name):
         return self[name]

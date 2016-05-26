@@ -71,6 +71,17 @@ class RegressionTestCase(TransactionTestCase):
         ]
         self.assertEqual(expected, data)
 
+        response = self.render_preview(
+            template=template, context=dict(myvar=('0', {}))
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('zero', response.content.strip())
+
+        response = self.render_preview(
+            template=template, context=dict(myvar=('1', {}))
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('nonzero', response.content.strip())
 
     def render_preview(self, template, context):
         """

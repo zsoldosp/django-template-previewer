@@ -113,16 +113,29 @@ def _get_node_context(node):
             if node.takes_context:
                 class RecordContext(object):
                     def __init__(self):
-                        self.used_var_names = set([])
+                        self.used_var_names = {}
 
                     def __repr__(self):
                         return repr(self.used_var_names)
 
                     def __getitem__(self, name):
-                        self.used_var_names.add(name)
+                        self.used_var_names.setdefault(name, RecordContext())
+                        return self.used_var_names[name]
+
+                    def __getattr__(self, name):
+                        return self[name]
 
                     def get_used_variable_names(self):
-                        return sorted(self.used_var_names)
+                        result = []
+                        for name, child in self.used_var_names.items():
+                            if not child.used_var_names:
+                                result.append(name)
+                            else:
+                                full_names = list(
+                                    '.'.join([name, child_name])
+                                    for child_name in child.get_used_variable_names())
+                                result.extend(full_names)
+                        return sorted(result)
 
                 record_context = RecordContext()
                 node.render(record_context)

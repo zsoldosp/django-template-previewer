@@ -49,7 +49,13 @@ class RegressionTestCase(TransactionTestCase):
 
     def test_handling_hidden_context_usage_in_custom_template_tags(self):
         data = self.parse_template('hidden_context_use_via_template_tags.html')
-        self.assertEqual([{u'children': [], u'name': u'foo'}], data)
+        expected = [
+            { u'name': u'foo', u'children': [] },
+            { u'name': u'bar', u'children': [
+                    { u'name': u'baz', u'children': [] }
+                ] },
+        ]
+        self.assertEqual(expected, data)
 
     def parse_template(self, template_name):
         url = reverse('parse') + '?template=%s' % template_name

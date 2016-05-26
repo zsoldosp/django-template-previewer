@@ -29,7 +29,8 @@ class RegressionTestCase(TransactionTestCase):
 
     def test_can_parse_url_nodes_in_templates(self):
         data = self.parse_template('url.html')
-        self.assertEqual([{u'children': [], u'name': u'reverse_name_context_var'}], data)
+        self.assertEqual([{u'children': [], u'name': u'parse_link_text'}], data)
+
 
     def parse_template(self, template_name):
         url = reverse('parse') + '?template=%s' % template_name

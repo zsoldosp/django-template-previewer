@@ -107,6 +107,26 @@ def _get_node_context(node):
         singular, vars = node.render_token_list(node.singular)
         result += vars
     else:
+        cls_name = repr(type(node))
+        expected = '<class \'django.template.base.SimpleNode\'>'
+        if cls_name == expected:
+            if node.takes_context:
+                class RecordContext(object):
+                    def __init__(self):
+                        self.used_var_names = set([])
+
+                    def __repr__(self):
+                        return repr(self.used_var_names)
+
+                    def __getitem__(self, name):
+                        self.used_var_names.add(name)
+
+                    def get_used_variable_names(self):
+                        return sorted(self.used_var_names)
+
+                record_context = RecordContext()
+                node.render(record_context)
+                result += record_context.get_used_variable_names()
         pass  # We can't do much if we don't know the etmplatetag meaning
     # TODO: regroup (the arg, and renamings)
 

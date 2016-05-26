@@ -63,6 +63,15 @@ class RegressionTestCase(TransactionTestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual('foo\nbaz', response.content.strip())
 
+    def test_should_only_pick_up_variables_not_constants_from_conditionals(self):
+        template = 'conditionals.html'
+        data = self.parse_template(template)
+        expected = [
+            { u'name': u'myvar', u'children': [] },
+        ]
+        self.assertEqual(expected, data)
+
+
     def render_preview(self, template, context):
         """
         context is of form

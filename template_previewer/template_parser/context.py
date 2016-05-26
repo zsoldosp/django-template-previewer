@@ -162,7 +162,13 @@ def _get_expression_vars(expr):
     """get variables used on an "if" expression"""
     result = []
     if hasattr(expr, 'value') and expr.value:
-        result += _get_vars(expr.value)
+        def is_constant():
+            empty_context = {}
+            val = expr.eval(empty_context)
+            are_same = unicode(val) == unicode(expr.value)
+            return are_same
+        if not is_constant():
+            result += _get_vars(expr.value)
     if hasattr(expr, 'first') and expr.first:
         result += _get_expression_vars(expr.first)
     if hasattr(expr, 'second') and expr.second:

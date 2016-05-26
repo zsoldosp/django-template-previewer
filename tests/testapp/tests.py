@@ -32,6 +32,8 @@ class RegressionTestCase(TransactionTestCase):
         self.assertEqual([{u'children': [], u'name': u'parse_link_text'}], data)
 
     def test_can_parse_translations_with_vars(self):
+        # TODO: {% trans "This is the title" as the_title %}<h1>{{ the_title }}</h1>
+
         data = self.parse_template('translation.html')
         self.assertEqual([{u'children': [], u'name': u'var_to_translate'}, {u'children': [], u'name': u'first_name'}], data)
 

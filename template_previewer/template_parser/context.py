@@ -11,15 +11,15 @@ from django.template.loader_tags import (
 from django.templatetags.i18n import TranslateNode, BlockTranslateNode
 
 
-def _get_vars(filter_expression):
+def _get_vars(filter_expression, only_filter_vars=False):
     """
     Return the list of vars used in a django filter expressions. That includes
     the main var and any filter arguments
     """
-    if not hasattr(filter_expression.var, 'var'):
-        # Probably a string literal or something like that
-        result = []
-    else:
+    result = []  # string literal or something like that
+    has_var = hasattr(filter_expression.var, 'var')
+    should_add_var_to_result = has_var and not only_filter_vars
+    if should_add_var_to_result:
         result = [filter_expression.var.var]
     for _, arglist in filter_expression.filters:
         result.extend(arg.var for lookup, arg in arglist if lookup)
@@ -101,7 +101,8 @@ def _get_node_context(node):
                 listval = val.var.var.split('.')
                 renames += [([key], listval)]
     elif isinstance(node, TranslateNode):
-        result += _get_vars(node.filter_expression)
+        ignore_base_var = node.filter_expression.var.var[0] in ('\'', '"')
+        result += _get_vars(node.filter_expression, only_filter_vars=ignore_base_var)
     elif isinstance(node, BlockTranslateNode):
         singular, vars = node.render_token_list(node.singular)
         result += vars

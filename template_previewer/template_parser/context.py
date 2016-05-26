@@ -8,6 +8,7 @@ from django.template.loader import get_template
 from django.template.loader_tags import (
     BlockNode, ExtendsNode, IncludeNode
 )
+from django.templatetags.i18n import BlockTranslateNode
 
 
 def _get_vars(filter_expression):
@@ -99,6 +100,9 @@ def _get_node_context(node):
             if hasattr(val.var, 'var'):
                 listval = val.var.var.split('.')
                 renames += [([key], listval)]
+    elif isinstance(node, BlockTranslateNode):
+        singular, vars = node.render_token_list(node.singular)
+        result += vars
     else:
         pass  # We can't do much if we don't know the etmplatetag meaning
     # TODO: regroup (the arg, and renamings)

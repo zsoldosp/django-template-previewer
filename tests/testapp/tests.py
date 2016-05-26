@@ -38,12 +38,7 @@ class RegressionTestCase(TransactionTestCase):
         self.assertEqual([{u'children': [], u'name': u'var_to_translate'}, {u'children': [], u'name': u'first_name'}], data)
 
     def test_can_render_preview_for_a_given_template(self):
-        url = reverse('render')
-        payload = dict(
-            template='url.html',
-            context='{"parse_link_text":{"_str":"parse link text"}}'
-        )
-        response = self.client.post(url, payload)
+        response = self.render_preview(template='url.html', context=dict(parse_link_text=('parse link text', [])))
         self.assertEqual(200, response.status_code)
         self.assertEquals('<a href="/_preview/parse/">parse link text</a>', response.content.strip())
 
@@ -56,6 +51,26 @@ class RegressionTestCase(TransactionTestCase):
                 ] },
         ]
         self.assertEqual(expected, data)
+
+    def render_preview(self, template, context):
+        """
+        context is of form
+        {
+          'attr_name': (val, <child context>)
+        }
+        """
+        url = reverse('render')
+        def context2payload(context):
+            data = {}
+            for name, (val, child) in context.items():
+                data[name] = dict(_str=val)
+            return data
+
+        payload = dict(
+            template=template,
+            context=json.dumps(context2payload(context)),
+        )
+        return self.client.post(url, payload)
 
     def parse_template(self, template_name):
         url = reverse('parse') + '?template=%s' % template_name

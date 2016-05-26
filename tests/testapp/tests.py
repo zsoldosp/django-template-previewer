@@ -83,6 +83,18 @@ class RegressionTestCase(TransactionTestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual('nonzero', response.content.strip())
 
+    def test_should_ignore_variables_in_comments(self):
+        template = 'comments.html'
+        data = self.parse_template(template)
+        self.assertEqual([], data)
+
+        response = self.render_preview(
+            template=template, context=dict()
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('', response.content.strip())
+
+
     def render_preview(self, template, context):
         """
         context is of form

@@ -24,6 +24,11 @@ class ContextItem(object):
     def __unicode__(self):
         return self._str
 
+    def __nonzero__(self):
+        if self._str or self._context_dict:
+            return True
+        return False
+
     def __getitem__(self, key):
         if isinstance(key, int):
             key = str(key)

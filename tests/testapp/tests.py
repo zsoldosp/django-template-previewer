@@ -83,6 +83,26 @@ class RegressionTestCase(TransactionTestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual('nonzero', response.content.strip())
 
+    def test_coniditionals_can_use_pytohnic_if_object(self):
+        template = 'if-unary-condition.html'
+        data = self.parse_template(template)
+        expected = [
+            { u'name': u'somevar', u'children': [] },
+        ]
+        self.assertEqual(expected, data)
+
+        response = self.render_preview(
+            template=template, context=dict(somevar=('sdf', {}))
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('something', response.content.strip())
+
+        response = self.render_preview(
+            template=template, context=dict(somevar=('', {}))
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('nothing', response.content.strip())
+
     def test_should_ignore_variables_in_comments(self):
         template = 'comments.html'
         data = self.parse_template(template)

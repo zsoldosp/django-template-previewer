@@ -120,6 +120,16 @@ class RegressionTestCase(TransactionTestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual('SKU: 1234\n\nSKU: 5678', response.content.strip())
 
+    def test_include_should_not_duplicate_variables_for_include(self):
+        template = 'includes-main.html'
+        data = self.parse_template(template)
+        expected = [
+            {u'name': u'items', u'children': [
+                    { u'name': u'0', u'children': [
+                        { u'name': u'sku', u'children': [] }
+                    ]}]
+            }]
+
     def render_preview(self, template, context):
         """
         context is of form

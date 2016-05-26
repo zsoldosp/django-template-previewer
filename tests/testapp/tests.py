@@ -94,6 +94,31 @@ class RegressionTestCase(TransactionTestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual('', response.content.strip())
 
+    def test_should_only_report_loops_collection_var(self):
+        template = 'loops.html'
+        data = self.parse_template(template)
+        expected = [
+            {u'name': u'items', u'children': [
+                    { u'name': u'0', u'children': [
+                        { u'name': u'sku', u'children': [] }
+                    ]}]
+            }]
+        self.assertEqual(expected, data)
+
+        response = self.render_preview(
+            template=template, context=dict(
+                items=('', {
+                    '0': ('', dict(
+                        sku=('1234', {}),
+                    )),
+                    '1': ('', dict(
+                        sku=('5678', {}),
+                    )),
+                })
+            )
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('SKU: 1234\n\nSKU: 5678', response.content.strip())
 
     def render_preview(self, template, context):
         """

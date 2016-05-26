@@ -38,12 +38,13 @@ class RegressionTestCase(TransactionTestCase):
         self.assertEqual([{u'children': [], u'name': u'var_to_translate'}, {u'children': [], u'name': u'first_name'}], data)
 
     def test_can_render_preview_for_a_given_template(self):
-        response = self.render_preview(template='url.html', context=dict(parse_link_text=('parse link text', [])))
+        response = self.render_preview(template='url.html', context=dict(parse_link_text=('parse link text', {})))
         self.assertEqual(200, response.status_code)
         self.assertEquals('<a href="/_preview/parse/">parse link text</a>', response.content.strip())
 
     def test_handling_hidden_context_usage_in_custom_template_tags(self):
-        data = self.parse_template('hidden_context_use_via_template_tags.html')
+        template = 'hidden_context_use_via_template_tags.html'
+        data = self.parse_template(template)
         expected = [
             { u'name': u'foo', u'children': [] },
             { u'name': u'bar', u'children': [
@@ -51,6 +52,16 @@ class RegressionTestCase(TransactionTestCase):
                 ] },
         ]
         self.assertEqual(expected, data)
+        response = self.render_preview(
+            template=template, context=dict(
+                foo=('foo', {}),
+                bar=('bar', dict(
+                    baz=('baz', {}),
+                )),
+            )
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('foo\nbaz', response.content.strip())
 
     def render_preview(self, template, context):
         """
@@ -64,6 +75,9 @@ class RegressionTestCase(TransactionTestCase):
             data = {}
             for name, (val, child) in context.items():
                 data[name] = dict(_str=val)
+                for child_name, (child_val, child_context) in child.items():
+                    data[name][child_name] = context2payload(child_context)
+                    data[name][child_name]['_str'] = child_val
             return data
 
         payload = dict(

@@ -31,6 +31,15 @@ class RegressionTestCase(TransactionTestCase):
         data = self.parse_template('url.html')
         self.assertEqual([{u'children': [], u'name': u'parse_link_text'}], data)
 
+    def test_can_render_preview_for_a_given_template(self):
+        url = reverse('render')
+        payload = dict(
+            template='url.html',
+            context='{"parse_link_text":{"_str":"parse link text"}}'
+        )
+        response = self.client.post(url, payload)
+        self.assertEqual(200, response.status_code)
+        self.assertEquals('<a href="/_preview/parse/">parse link text</a>', response.content.strip())
 
     def parse_template(self, template_name):
         url = reverse('parse') + '?template=%s' % template_name

@@ -32,8 +32,8 @@ class RegressionTestCase(TransactionTestCase):
         self.assertEqual([{u'children': [], u'name': u'parse_link_text'}], data)
 
     def test_can_parse_translations_with_vars(self):
-        data = self.parse_template('blocktrans.html')
-        self.assertEqual([{u'children': [], u'name': u'first_name'}], data)
+        data = self.parse_template('translation.html')
+        self.assertEqual([{u'children': [], u'name': u'var_to_translate'}, {u'children': [], u'name': u'first_name'}], data)
 
     def test_can_render_preview_for_a_given_template(self):
         url = reverse('render')

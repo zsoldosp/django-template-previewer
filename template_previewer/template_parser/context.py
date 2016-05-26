@@ -8,7 +8,7 @@ from django.template.loader import get_template
 from django.template.loader_tags import (
     BlockNode, ExtendsNode, IncludeNode
 )
-from django.templatetags.i18n import BlockTranslateNode
+from django.templatetags.i18n import TranslateNode, BlockTranslateNode
 
 
 def _get_vars(filter_expression):
@@ -100,6 +100,8 @@ def _get_node_context(node):
             if hasattr(val.var, 'var'):
                 listval = val.var.var.split('.')
                 renames += [([key], listval)]
+    elif isinstance(node, TranslateNode):
+        result += _get_vars(node.filter_expression)
     elif isinstance(node, BlockTranslateNode):
         singular, vars = node.render_token_list(node.singular)
         result += vars

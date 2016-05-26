@@ -45,6 +45,7 @@ lint:
 	flake8 template_previewer tests
 
 test:
+	#python manage.py test testapp.tests.RegressionTestCase.test_can_parse_translations_with_vars --traceback
 	python manage.py test testapp --traceback
 
 clean-tox:

@@ -29,6 +29,9 @@ class ContextItem(object):
             key = str(key)
         return self._context_dict[key]
 
+    def __getattr__(self, name):
+        return self[name]
+
     def __iter__(self):
         if self._islist:
             return (self[str(x)] for x in range(self._len))

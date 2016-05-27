@@ -29,3 +29,10 @@ MIDDLEWARE_CLASSES = [
 STATIC_URL = '/static/'
 
 ROOT_URLCONF = 'testapp.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': True,
+    },
+]

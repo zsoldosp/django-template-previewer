@@ -144,8 +144,11 @@ def _get_node_context(node):
     # TODO: regroup (the arg, and renamings)
 
     # Go through children nodes. [1:] is to skip self
-    for child in node.get_nodes_by_type(Node)[1:]:
-        result += _get_node_context(child)
+    for attr in node.child_nodelists:
+        nodelist = getattr(node, attr, None)
+        if nodelist:
+            for child_node in nodelist:
+                result += _get_node_context(child_node)
 
     # Apply renames
     for src, dest in renames:

@@ -1,6 +1,6 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^_preview/', include('template_previewer.urls')),
-)
+]

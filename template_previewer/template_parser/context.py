@@ -108,10 +108,13 @@ def _get_node_context(node):
         result += vars
     else:
         cls_name = repr(type(node))
-        expected = '<class \'django.template.base.SimpleNode\'>'
-        if cls_name == expected:
+        custom_tag_base_cls_pre_19 = '<class \'django.template.base.SimpleNode\'>'
+        custom_tag_base_cls_post_19 = '<class \'django.template.library.SimpleNode\'>'
+        if cls_name in [custom_tag_base_cls_pre_19, custom_tag_base_cls_post_19]:
             if node.takes_context:
                 class RecordContext(object):
+                    autoescape = True
+
                     def __init__(self):
                         self.used_var_names = {}
 

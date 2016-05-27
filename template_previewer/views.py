@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_POST, require_GET
 from django.template.response import TemplateResponse
 from django.core.urlresolvers import reverse
-from django.template import Template, Context, loader, TemplateDoesNotExist
+from django.template import Template, loader, TemplateDoesNotExist
 
 from template_previewer.forms import RenderForm, ParseForm
 from template_previewer.template_parser.context import get_context
@@ -75,8 +75,7 @@ def render(request):
         template = loader.get_template(template_name)
         decoder = json.JSONDecoder('utf-8', ContextItem)
         context = decoder.decode(form.cleaned_data['context'])
-        c = Context(context)
-        return HttpResponse(template.render(c))
+        return HttpResponse(template.render(context))
     else:
         return HttpResponseBadRequest()
 

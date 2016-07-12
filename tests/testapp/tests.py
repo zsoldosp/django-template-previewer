@@ -2,8 +2,41 @@ import json
 from django.core.urlresolvers import reverse
 from django.test import TransactionTestCase, Client
 
+class Helpers(object):
 
-class RegressionTestCase(TransactionTestCase):
+    def render_preview(self, template, context):
+        """
+        context is of form
+        {
+          'attr_name': (val, <child context>)
+        }
+        """
+        url = reverse('render')
+        def context2payload(context):
+            data = {}
+            for name, (val, child) in context.items():
+                data[name] = dict(_str=val)
+                for child_name, (child_val, child_context) in child.items():
+                    data[name][child_name] = context2payload(child_context)
+                    data[name][child_name]['_str'] = child_val
+            return data
+
+        payload = dict(
+            template=template,
+            context=json.dumps(context2payload(context)),
+        )
+        return self.client.post(url, payload)
+
+    def parse_template(self, template_name):
+        url = reverse('parse') + '?template=%s' % template_name
+        response = self.client.get(url)
+        self.assertEqual(200, response.status_code)
+        data = json.loads(response.content)
+        self.maxDiff = None
+        return data
+
+
+class RegressionTestCase(Helpers, TransactionTestCase):
 
     def test_can_load_main_page(self):
         url = reverse('preview')
@@ -181,33 +214,3 @@ class RegressionTestCase(TransactionTestCase):
             }]
         self.assertEqual(expected, data)
 
-    def render_preview(self, template, context):
-        """
-        context is of form
-        {
-          'attr_name': (val, <child context>)
-        }
-        """
-        url = reverse('render')
-        def context2payload(context):
-            data = {}
-            for name, (val, child) in context.items():
-                data[name] = dict(_str=val)
-                for child_name, (child_val, child_context) in child.items():
-                    data[name][child_name] = context2payload(child_context)
-                    data[name][child_name]['_str'] = child_val
-            return data
-
-        payload = dict(
-            template=template,
-            context=json.dumps(context2payload(context)),
-        )
-        return self.client.post(url, payload)
-
-    def parse_template(self, template_name):
-        url = reverse('parse') + '?template=%s' % template_name
-        response = self.client.get(url)
-        self.assertEqual(200, response.status_code)
-        data = json.loads(response.content)
-        self.maxDiff = None
-        return data

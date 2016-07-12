@@ -161,6 +161,15 @@ class RegressionTestCase(TransactionTestCase):
             self.parse_template('includes-repeat.html')
         )
 
+    def test_included_templates_variables_are_parsed_too(self):
+        expected = [
+            { u'name': u'item', u'children': [
+                { u'name': u'sku', u'children': [] }
+                ]
+            }
+        ]
+        self.assertEqual(expected, self.parse_template('include-single.html'))
+
     def test_include_should_not_duplicate_variables_for_include(self):
         template = 'includes-main.html'
         data = self.parse_template(template)
@@ -170,6 +179,7 @@ class RegressionTestCase(TransactionTestCase):
                         { u'name': u'sku', u'children': [] }
                     ]}]
             }]
+        self.assertEqual(expected, data)
 
     def render_preview(self, template, context):
         """

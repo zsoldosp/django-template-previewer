@@ -62,7 +62,9 @@ def _get_node_context(node):
     elif isinstance(node, IfEqualNode):
         result = _get_vars(node.var1) + _get_vars(node.var2)
     elif isinstance(node, IncludeNode):
-        result = _get_vars(node.template)
+        if hasattr(node.template, 'var'):
+            included_template = get_template(node.template.var)
+            result += get_context(included_template)
         for key, val in node.extra_context.iteritems():
             result += _get_vars(val)
         # Note that we ignore the included template and renaming here, because

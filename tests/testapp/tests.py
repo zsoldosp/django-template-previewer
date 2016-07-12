@@ -214,3 +214,21 @@ class RegressionTestCase(Helpers, TransactionTestCase):
             }]
         self.assertEqual(expected, data)
 
+    def test_tuples_are_parsed_into_correct_variables(self):
+        expected = [
+            {
+                u'name': u'somedict', u'children': [
+                    {
+                        u'name': u'iteritems', u'children': [
+                            {
+                                u'name': '0', u'children': [
+                                    { u'name': '0', u'children': [] },
+                                    { u'name': '1', u'children': [] },
+                                ]
+                            },
+                        ] 
+                    }
+                ]
+            }
+        ]
+        self.assertEqual(expected, self.parse_template('tuples-in-loops.html'))

@@ -152,6 +152,15 @@ class RegressionTestCase(TransactionTestCase):
         self.assertEqual(expected, data)
 
 
+    def test_can_parse_single_variable_template(self):
+        self.assertEqual(
+            [
+                    { u'name': u'item', u'children': [
+                        { u'name': u'sku', u'children': [] }
+                    ] }],
+            self.parse_template('includes-repeat.html')
+        )
+
     def test_include_should_not_duplicate_variables_for_include(self):
         template = 'includes-main.html'
         data = self.parse_template(template)

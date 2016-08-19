@@ -111,9 +111,10 @@ def _get_node_context(node):
         singular, vars = node.render_token_list(node.singular)
         result += vars
     else:
-        cls_name = repr(type(node))
-        custom_tag_base_cls_pre_19 = '<class \'django.template.base.SimpleNode\'>'
-        custom_tag_base_cls_post_19 = '<class \'django.template.library.SimpleNode\'>'
+        tp_node = type(node)
+        cls_name = '.'.join([tp_node.__module__, tp_node.__name__])
+        custom_tag_base_cls_pre_19 = 'django.template.base.SimpleNode'
+        custom_tag_base_cls_post_19 = 'django.template.library.SimpleNode'
         if cls_name in [custom_tag_base_cls_pre_19, custom_tag_base_cls_post_19]:
             if node.takes_context:
                 class RecordContext(object):

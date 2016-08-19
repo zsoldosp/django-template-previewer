@@ -6,6 +6,7 @@ from django.template.response import TemplateResponse
 from django.core.urlresolvers import reverse
 from django.template import Template, loader, TemplateDoesNotExist
 from django.utils.encoding import force_text
+from django.utils import six
 
 from template_previewer.forms import RenderForm, ParseForm
 from template_previewer.template_parser.context import get_context
@@ -44,7 +45,8 @@ class ContextItem(object):
     def _typed_val(self, raw):
         # TODO: this is ugly. But we need this 'coz otherwise conditionals don't work correctly, e.g.: if foo, if foo == 1, etc.
         str_raw = str(raw)
-        for conv_fn in (long, float):
+        integer = six.integer_types[-1]
+        for conv_fn in (integer, float):
             try:
                 _typed = conv_fn(str_raw)
             except (TypeError, ValueError):

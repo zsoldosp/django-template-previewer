@@ -9,6 +9,7 @@ from django.template.loader_tags import (
     BlockNode, ExtendsNode, IncludeNode
 )
 from django.templatetags.i18n import TranslateNode, BlockTranslateNode
+from django.utils.encoding import force_text
 
 
 def _get_vars(filter_expression, only_filter_vars=False):
@@ -173,7 +174,7 @@ def _get_expression_vars(expr):
         def is_constant():
             empty_context = {}
             val = expr.eval(empty_context)
-            are_same = unicode(val) == unicode(expr.value)
+            are_same = force_text(val) == force_text(expr.value)
             return are_same
         if not is_constant():
             result += _get_vars(expr.value)

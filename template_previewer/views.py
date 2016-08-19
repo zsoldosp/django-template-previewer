@@ -5,6 +5,7 @@ from django.views.decorators.http import require_POST, require_GET
 from django.template.response import TemplateResponse
 from django.core.urlresolvers import reverse
 from django.template import Template, loader, TemplateDoesNotExist
+from django.utils.encoding import force_text
 
 from template_previewer.forms import RenderForm, ParseForm
 from template_previewer.template_parser.context import get_context
@@ -19,7 +20,7 @@ class ContextItem(object):
         self._islist = self._len > 0
 
     def __str__(self):
-        return self._str.encode('utf-8')
+        return force_text(s=self._str, encoding='utf-8')
 
     def __unicode__(self):
         return self._str

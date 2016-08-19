@@ -1,6 +1,6 @@
 TRAVIS_YML=.travis.yml
 TOX2TRAVIS=tox2travis.py
-.PHONY: clean-pyc clean-build docs clean-tox ${TRAVIS_YML} ci
+.PHONY: clean-pyc clean-build clean-tox ${TRAVIS_YML} ci
 PYPI_SERVER?=https://pypi.python.org/pypi
 SHELL=/bin/bash
 
@@ -11,7 +11,6 @@ help:
 	@echo "test - run tests quickly with the default Python"
 	@echo "testall - run tests on every Python version with tox"
 	@echo "coverage - check code coverage quickly with the default Python"
-	@echo "docs - generate Sphinx HTML documentation"
 	@echo "tag - tag the current version and push it to origin"
 	@echo "release - package and upload a release"
 	@echo "sdist - package"
@@ -25,16 +24,11 @@ ${TRAVIS_YML}: tox.ini ${TOX2TRAVIS}
 	test 0 -eq $$(git diff $@ | wc -l)
 
 clean: clean-build clean-pyc clean-tox
-	cd docs && make clean
-
-docs:
-	cd docs && make html
 
 clean-build:
 	rm -fr build/
 	rm -fr dist/
 	find -name *.egg-info -type d | xargs rm -rf
-	cd docs && make clean
 
 clean-pyc:
 	find . -name '*.pyc' -exec rm -f {} +

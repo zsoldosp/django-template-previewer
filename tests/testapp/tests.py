@@ -31,7 +31,7 @@ class Helpers(object):
         url = reverse('parse') + '?template=%s' % template_name
         response = self.client.get(url)
         self.assertEqual(200, response.status_code)
-        data = json.loads(response.content)
+        data = json.loads(response.content.decode('utf-8'))
         self.maxDiff = None
         return data
 

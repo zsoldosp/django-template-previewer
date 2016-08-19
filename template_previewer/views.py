@@ -24,6 +24,11 @@ class ContextItem(object):
     def __unicode__(self):
         return self._str
 
+    def __bool__(self):
+        if self.__nonzero__():
+            return True
+        return False
+
     def __nonzero__(self):
         if self._str or self._context_dict:
             return True

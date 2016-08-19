@@ -35,6 +35,9 @@ class Helpers(object):
         self.maxDiff = None
         return data
 
+    def get_stripped_response_content(self, response):
+        return response.content.decode('utf-8').strip()
+
 
 class RegressionTestCase(Helpers, TransactionTestCase):
 
@@ -73,7 +76,7 @@ class RegressionTestCase(Helpers, TransactionTestCase):
     def test_can_render_preview_for_a_given_template(self):
         response = self.render_preview(template='url.html', context=dict(parse_link_text=('parse link text', {})))
         self.assertEqual(200, response.status_code)
-        self.assertEquals('<a href="/_preview/parse/">parse link text</a>', response.content.strip())
+        self.assertEquals('<a href="/_preview/parse/">parse link text</a>', self.get_stripped_response_content(response))
 
     def test_handling_hidden_context_usage_in_custom_template_tags(self):
         template = 'hidden_context_use_via_template_tags.html'
@@ -94,7 +97,7 @@ class RegressionTestCase(Helpers, TransactionTestCase):
             )
         )
         self.assertEqual(200, response.status_code)
-        self.assertEqual('foo\nbaz', response.content.strip())
+        self.assertEqual('foo\nbaz', self.get_stripped_response_content(response))
 
     def test_should_only_pick_up_variables_not_constants_from_conditionals(self):
         template = 'conditionals.html'
@@ -108,13 +111,13 @@ class RegressionTestCase(Helpers, TransactionTestCase):
             template=template, context=dict(myvar=('0', {}))
         )
         self.assertEqual(200, response.status_code)
-        self.assertEqual('zero', response.content.strip())
+        self.assertEqual('zero', self.get_stripped_response_content(response))
 
         response = self.render_preview(
             template=template, context=dict(myvar=('1', {}))
         )
         self.assertEqual(200, response.status_code)
-        self.assertEqual('nonzero', response.content.strip())
+        self.assertEqual('nonzero', self.get_stripped_response_content(response))
 
     def test_coniditionals_can_use_pytohnic_if_object(self):
         template = 'if-unary-condition.html'
@@ -128,13 +131,13 @@ class RegressionTestCase(Helpers, TransactionTestCase):
             template=template, context=dict(somevar=('sdf', {}))
         )
         self.assertEqual(200, response.status_code)
-        self.assertEqual('something', response.content.strip())
+        self.assertEqual('something', self.get_stripped_response_content(response))
 
         response = self.render_preview(
             template=template, context=dict(somevar=('', {}))
         )
         self.assertEqual(200, response.status_code)
-        self.assertEqual('nothing', response.content.strip())
+        self.assertEqual('nothing', self.get_stripped_response_content(response))
 
     def test_should_ignore_variables_in_comments(self):
         template = 'comments.html'
@@ -145,7 +148,7 @@ class RegressionTestCase(Helpers, TransactionTestCase):
             template=template, context=dict()
         )
         self.assertEqual(200, response.status_code)
-        self.assertEqual('', response.content.strip())
+        self.assertEqual('', self.get_stripped_response_content(response))
 
     def test_should_only_report_loops_collection_var(self):
         template = 'loops.html'
@@ -171,7 +174,7 @@ class RegressionTestCase(Helpers, TransactionTestCase):
             )
         )
         self.assertEqual(200, response.status_code)
-        self.assertEqual('SKU: 1234\n\nSKU: 5678', response.content.strip())
+        self.assertEqual('SKU: 1234\n\nSKU: 5678', self.get_stripped_response_content(response))
 
     def test_putting_a_loop_inside_a_block_shouldnt_change_var_collection(self):
         template = 'loop-inside-block.html'

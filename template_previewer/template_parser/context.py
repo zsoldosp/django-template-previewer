@@ -10,6 +10,7 @@ from django.template.loader_tags import (
 )
 from django.templatetags.i18n import TranslateNode, BlockTranslateNode
 from django.utils.encoding import force_text
+from django.utils import six
 
 
 def _get_vars(filter_expression, only_filter_vars=False):
@@ -66,7 +67,7 @@ def _get_node_context(node):
         if hasattr(node.template, 'var'):
             included_template = get_template(node.template.var)
             result += get_context(included_template)
-        for key, val in node.extra_context.iteritems():
+        for key, val in six.iteritems(node.extra_context):
             result += _get_vars(val)
         # Note that we ignore the included template and renaming here, because
         # We can not know which template is the one included

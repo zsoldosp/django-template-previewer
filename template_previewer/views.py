@@ -73,8 +73,7 @@ def render(request):
     if form.is_valid():
         template_name = form.cleaned_data['template']
         template = loader.get_template(template_name)
-        decoder = json.JSONDecoder('utf-8', ContextItem)
-        context = decoder.decode(form.cleaned_data['context'])
+        context = json.loads(s=form.cleaned_data['context'], encoding='utf-8', object_hook=ContextItem)
         return HttpResponse(template.render(context))
     else:
         return HttpResponseBadRequest()
